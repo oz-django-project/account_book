@@ -1,5 +1,6 @@
-from config.settings import *
 import os
+
+from config.settings import *
 
 DEBUG = False
 ALLOWED_HOSTS = [] # 도메인 주소
