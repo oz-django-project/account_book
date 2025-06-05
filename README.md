@@ -13,8 +13,6 @@
 - 각 계좌의 거래 내역을 저장하는 테이블입니다.
 거래 금액, 거래 후 잔액, 거래 내역 및 입출금 타입 등의 정보를 포함합니다.
 
-users: accounts: transaction_history
-
 ```
 users  ────────< accounts  ────────< transaction_history
 (1)                (N)                      (N)
