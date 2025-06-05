@@ -15,3 +15,6 @@ source .venv/bin/activate
 
 # 깃허브 커밋 템플릿 등록
 git config --local commit.template .gitmessage.txt 
+
+# 라이브러리 설치
+uv pip install
