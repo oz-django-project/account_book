@@ -2,7 +2,8 @@ name: Code Quality Checks
 
 on:
   push:
-    branches: ["*"]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -15,10 +16,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ""
           MYSQL_DATABASE: django_mini
           MYSQL_USER: root
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_PASSWORD: ""
         options: >-
           --health-cmd="mysqladmin ping -h localhost -uroot --silent"
           --health-interval=10s
@@ -29,10 +30,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.13
+      - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13.3'
+          python-version: '3.12'
 
       - name: Install uv
         run: |
@@ -62,7 +63,7 @@ jobs:
         env:
           DB_NAME: django_mini
           DB_USER: root
-          DB_PASSWORD: "1234"
+          DB_PASSWORD: ""
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DJANGO_SETTINGS_MODULE: project_name.settings
