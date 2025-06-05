@@ -14,6 +14,7 @@ uv venv -p 3.13
 source .venv/bin/activate
 
 # 깃허브 커밋 템플릿 등록
+# git commit 시 .gitmessage.txt 출력
 git config --local commit.template .gitmessage.txt 
 
 # 라이브러리 설치
