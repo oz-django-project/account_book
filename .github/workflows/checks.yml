@@ -10,20 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: django_mini
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          db:
+            image: mysql:8.0
+            ports:
+              - 3306:3306
+            env:
+              MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+              MYSQL_DATABASE: django_mini
+            options: >-
+              --health-cmd="mysqladmin ping -h localhost -u root --silent"
+              --health-interval=10s
+              --health-timeout=5s
+              --health-retries=5
 
     steps:
       - name: Checkout code
