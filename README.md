@@ -1,21 +1,19 @@
-# 맥OS, 리눅스, WSL
-curl -LsSf https://astral.sh/uv/install.sh | sh
+![ERD 다이어그램](images/erd.png)
 
-# 윈도우
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+## user 테이블
+- 사용자 계정을 저장하는 테이블입니다. 
+로그인에 사용되는 이메일, 비밀번호 및 연락처 등의 정보를 포함합니다.
+또한 관리자 / 스태프 여부 및 활성화 / 비활성화 여부도 포함되어 있습니다.
 
-# 가상 환경 만들기
-uv venv .venv
+## account 테이블
+- 사용자가 보유한 실제 계좌 정보를 저장하는 테이블입니다.
+각 계좌는 특정 사용자와 연결되며, 은행 코드, 계좌 유형 및 잔액 등의 정보를 포함합니다.
 
-# 파이썬 버전 설정
-uv venv -p 3.13
+## transaction_history 테이블
+- 각 계좌의 거래 내역을 저장하는 테이블입니다.
+거래 금액, 거래 후 잔액, 거래 내역 및 입출금 타입 등의 정보를 포함합니다.
 
-# 가상 환경 진입
-source .venv/bin/activate
-
-# 깃허브 커밋 템플릿 등록
-# git commit 시 .gitmessage.txt 출력
-git config --local commit.template .gitmessage.txt 
-
-# 라이브러리 설치
-uv pip install
+```
+users  ────────< accounts  ────────< transaction_history
+(1)                (N)                      (N)
+```
