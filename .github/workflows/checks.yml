@@ -56,8 +56,11 @@ jobs:
           uv run black . --check
 
       - name: Wait for MySQL to be ready
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          until mysqladmin ping -h localhost -u root -p "${{ secrets.DB_PASSWORD }}" --silent; do
+          until mysqladmin ping -h 127.0.0.1 -u root -p"$DB_PASSWORD" --silent; do
+            echo "Waiting for MySQL..."
             sleep 1
           done
 
