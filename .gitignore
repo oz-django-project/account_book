@@ -5,3 +5,6 @@ db.sqlite3
 .env
 .idea
 .python-version
+.uv/
+uv.cache/
+uv.lock

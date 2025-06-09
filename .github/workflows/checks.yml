@@ -2,8 +2,7 @@ name: Code Quality Checks
 
 on:
   push:
-    branches:
-      - main
+    branches: ["*"]
   pull_request:
 
 jobs:
@@ -16,10 +15,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_ROOT_PASSWORD: "1234"
           MYSQL_DATABASE: django_mini
           MYSQL_USER: root
-          MYSQL_PASSWORD: ""
+          MYSQL_PASSWORD: "1234"
         options: >-
           --health-cmd="mysqladmin ping -h localhost -uroot --silent"
           --health-interval=10s
@@ -63,7 +62,7 @@ jobs:
         env:
           DB_NAME: django_mini
           DB_USER: root
-          DB_PASSWORD: ""
+          DB_PASSWORD: "1234"
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DJANGO_SETTINGS_MODULE: project_name.settings
