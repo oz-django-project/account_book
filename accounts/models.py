@@ -110,7 +110,7 @@ class Account(models.Model):
         ("STOCK", "주식"),
     ]
 
-    users = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
+    users = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts")
     account_number = models.CharField(max_length=20, unique=True)
     bank_code = models.CharField(max_length=20, choices=BANK_CODES)
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE)
@@ -118,6 +118,7 @@ class Account(models.Model):
 
     def __str__(self):
         return self.account_number
+
 
 class transaction_history(models.Model):
 
@@ -135,7 +136,9 @@ class transaction_history(models.Model):
         ("CARD", "카드결제"),
         ("INTEREST", "이자"),
     ]
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
+    account = models.ForeignKey(
+        Account, on_delete=models.CASCADE, related_name="transactions"
+    )
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     balance_after = models.DecimalField(max_digits=12, decimal_places=2)
     description = models.CharField(max_length=255)
@@ -144,4 +147,6 @@ class transaction_history(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.account.account_number} - {self.amount} ({self.transaction_type})"
+        return (
+            f"{self.account.account_number} - {self.amount} ({self.transaction_type})"
+        )
