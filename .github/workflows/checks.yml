@@ -57,7 +57,7 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          until mysqladmin ping -h localhost -u root --silent; do
+          until mysqladmin ping -h localhost -u root -p "${{ secrets.DB_PASSWORD }}" --silent; do
             sleep 1
           done
 
