@@ -2,46 +2,50 @@ name: Code Quality Checks
 
 on:
   push:
-    branches:
-      - main
+    branches: ["*"]
   pull_request:
 
 jobs:
   ci:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: ""
-          MYSQL_DATABASE: django_mini
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ""
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -uroot --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+#    services:
+#      db:
+#        image: mysql:8.0
+#        ports:
+#          - 3306:3306
+#        env:
+#          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#          MYSQL_DATABASE: django_mini
+#          MYSQL_USER: root
+#          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#        options: >-
+#          --health-cmd="mysqladmin ping -h localhost -u root --silent"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.13
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.13.3'
 
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
+      - name: create uv
+        run: |
+          uv venv
+
       - name: Install Packages & Libraries
         run: |
+          source .venv/bin/activate
           uv pip install mysqlclient
           uv pip install .
 
@@ -55,7 +59,7 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
-          until mysqladmin ping -h localhost -uroot --silent; do
+          until mysqladmin ping -h localhost -u root --silent; do
             sleep 1
           done
 
@@ -63,7 +67,7 @@ jobs:
         env:
           DB_NAME: django_mini
           DB_USER: root
-          DB_PASSWORD: ""
+          DB_PASSWORD: "1234"
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DJANGO_SETTINGS_MODULE: project_name.settings

@@ -1,10 +1,15 @@
+from django.contrib import admin
 from django.urls import path
-from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
-                                   SpectacularSwaggerView)
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from django.contrib import admin
+
+from users.views import RegisterView
 
 schema_view = get_schema_view(
     openapi.Info(
