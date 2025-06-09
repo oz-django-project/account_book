@@ -15,10 +15,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: "1234"
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           MYSQL_DATABASE: django_mini
           MYSQL_USER: root
-          MYSQL_PASSWORD: "1234"
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         options: >-
           --health-cmd="mysqladmin ping -h localhost -uroot --silent"
           --health-interval=10s
@@ -29,10 +29,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.13
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.13.3'
 
       - name: Install uv
         run: |
