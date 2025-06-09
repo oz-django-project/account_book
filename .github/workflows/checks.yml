@@ -2,8 +2,7 @@ name: Code Quality Checks
 
 on:
   push:
-    branches:
-      - '**'
+    branches: ["*"]
   pull_request:
 
 jobs:
