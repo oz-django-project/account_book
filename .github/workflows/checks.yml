@@ -39,13 +39,13 @@ jobs:
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: uv source venv
+      - name: create uv
         run: |
           uv venv
-          uv source .venv/bin/activate
 
       - name: Install Packages & Libraries
         run: |
+          source .venv/bin/activate
           uv pip install mysqlclient
           uv pip install .
 
