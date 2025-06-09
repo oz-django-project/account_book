@@ -3,7 +3,7 @@ name: Code Quality Checks
 on:
   push:
     branches:
-      - main
+      - '**'
   pull_request:
 
 jobs:
@@ -63,7 +63,7 @@ jobs:
         env:
           DB_NAME: django_mini
           DB_USER: root
-          DB_PASSWORD: ""
+          DB_PASSWORD: "1234"
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DJANGO_SETTINGS_MODULE: project_name.settings
