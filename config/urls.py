@@ -4,6 +4,8 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from django.contrib import admin
 
+from users.views import RegisterView
+
 schema_view = get_schema_view(
     openapi.Info(
         title="API Documentation",
@@ -20,5 +22,6 @@ urlpatterns = [
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('admin/', admin.site.urls)
+    path('admin/', admin.site.urls),
+    path('api/register/', RegisterView.as_view(), name='register'),
 ]
