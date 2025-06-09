@@ -45,7 +45,7 @@ jobs:
         run: |
           source .venv/bin/activate
           uv pip install mysqlclient
-          uv pip install --no-build-isolation -r requirements.txt
+          uv pip install -r requirements.txt
 
       - name: Run isort (Import sorting)
         run: |
