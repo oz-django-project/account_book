@@ -16,3 +16,7 @@ dev = [
     "drf-yasg>=1.21.10",
     "isort>=6.0.1",
 ]
+
+[tool.setuptools]
+packages = ["accounts", "users", "config"]
+
