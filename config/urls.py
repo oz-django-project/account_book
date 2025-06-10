@@ -9,7 +9,10 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from accounts.views import AccountCreateView, AccountDeleteView, AccountListView
+from accounts.views import (
+    AccountCreateView, AccountDeleteView, AccountListView,
+    TransactionHistoryListCreateView, TransactionHistoryRetrieveUpdateDestroyView
+)
 from users.views import (
     CookieTokenObtainPairView,
     LogoutView,
@@ -18,6 +21,7 @@ from users.views import (
     ReactiveUserView,
     RegisterView,
 )
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -50,12 +54,10 @@ urlpatterns = [
     path("api/profile/", MyProfileView.as_view(), name="my_profile"),
     path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
     path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
-<<<<<<< HEAD
-    path('transactions/', TransactionListView.as_view(), name='transaction-list'),
-=======
     # account
     path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("api/accounts/", AccountListView.as_view(), name="account_list"),
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
->>>>>>> 8c562c67e1d95bec1382a4073f7b7a15cd223dd1
+    path('transactions/', TransactionHistoryListCreateView.as_view(), name='transaction-list'),
+    path('transactions/<int:pk>/', TransactionHistoryRetrieveUpdateDestroyView.as_view(), name='transaction-detail'),
 ]
