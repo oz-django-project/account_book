@@ -68,10 +68,11 @@ jobs:
         env:
           DB_NAME: django_mini
           DB_USER: root
-          DB_PASSWORD: "1234"
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DJANGO_SETTINGS_MODULE: config.settings
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           uv run python manage.py makemigrations
           uv run python manage.py migrate

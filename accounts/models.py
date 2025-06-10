@@ -1,6 +1,7 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from users.models import User
+User = get_user_model()
 
 
 class Account(models.Model):
@@ -110,7 +111,7 @@ class Account(models.Model):
         ("STOCK", "주식"),
     ]
 
-    users = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="accounts")
     account_number = models.CharField(max_length=20, unique=True)
     bank_code = models.CharField(max_length=20, choices=BANK_CODES)
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE)
