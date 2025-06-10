@@ -1,13 +1,23 @@
+from django.contrib import admin
 from django.urls import path
-from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
-                                   SpectacularSwaggerView)
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from django.contrib import admin
-from users.views import RegisterView, LogoutView, CookieTokenObtainPairView, MyProfileView, PasswordChangeView, \
-    ReactiveUserView
+from accounts.views import AccountCreateView, AccountDeleteView, AccountListView
+from users.views import (
+    CookieTokenObtainPairView,
+    LogoutView,
+    MyProfileView,
+    PasswordChangeView,
+    ReactiveUserView,
+    RegisterView,
+)
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -20,19 +30,32 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
+    ),
+    path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     # admin
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # user
-    path('api/register/', RegisterView.as_view(), name='register'),
+    path("api/register/", RegisterView.as_view(), name="register"),
     path("api/login/", CookieTokenObtainPairView.as_view(), name="login"),
-    path('api/logout/', LogoutView.as_view(), name='logout'),
+    path("api/logout/", LogoutView.as_view(), name="logout"),
     path("api/profile/", MyProfileView.as_view(), name="my_profile"),
     path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
     path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
+<<<<<<< HEAD
     path('transactions/', TransactionListView.as_view(), name='transaction-list'),
+=======
+    # account
+    path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
+    path("api/accounts/", AccountListView.as_view(), name="account_list"),
+    path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
+>>>>>>> 8c562c67e1d95bec1382a4073f7b7a15cd223dd1
 ]

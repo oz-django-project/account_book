@@ -7,14 +7,21 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Transaction
 from .serializers import TransactionSerializer
 
-from .serializers import RegisterSerializer, TokenPairSerializer, UserProfileSerializer, UserUpdateSerializer, \
-    PasswordChangeSerializer, ReactiveUserSerializer
 from .models import User
+from .serializers import (
+    PasswordChangeSerializer,
+    ReactiveUserSerializer,
+    RegisterSerializer,
+    TokenPairSerializer,
+    UserProfileSerializer,
+    UserUpdateSerializer,
+)
 
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+
 
 # 쿠키에 토큰을 저장하는 방식의 로그인 뷰
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -42,31 +49,41 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 key="refresh_token",
                 value=refresh_token,
                 httponly=True,
-                samesite='Lax',
+                samesite="Lax",
                 secure=False,
-                max_age= 7 * 24 * 3600,
+                max_age=7 * 24 * 3600,
             )
 
         return response
 
+
 # 로그아웃 뷰
 class LogoutView(APIView):
     def post(self, request):
-        refresh_token = request.COOKIES.get('refresh_token')
+        refresh_token = request.COOKIES.get("refresh_token")
 
         if not refresh_token:
-            return Response({"detail": "Refresh token not found."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Refresh token not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
         except TokenError:
-            return Response({"detail": "Token is invalid or expired"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Token is invalid or expired"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        response = Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        response = Response(
+            {"detail": "Successfully logged out."}, status=status.HTTP_200_OK
+        )
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
         return response
+
 
 class MyProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -89,26 +106,35 @@ class MyProfileView(APIView):
         user = request.user
         user.is_active = False
         user.save()
-        return Response({"detail": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {"detail": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT
+        )
+
 
 # 비밀번호 변경
 class PasswordChangeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = PasswordChangeSerializer(data=request.data, context={'request': request})
+        serializer = PasswordChangeSerializer(
+            data=request.data, context={"request": request}
+        )
         if serializer.is_valid():
             user = request.user
-            user.set_password(serializer.validated_data['new_password'])
+            user.set_password(serializer.validated_data["new_password"])
             user.save()
-            return Response({"detail": "비밀번호가 변경되었습니다."}, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "비밀번호가 변경되었습니다."}, status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ReactiveUserView(APIView):
     def post(self, request):
         serializer = ReactiveUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+<<<<<<< HEAD
             return Response({"detail": "계정이 다시 활성화되었습니다."},status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -137,3 +163,9 @@ class TransactionView(generics.ListAPIView):
             queryset = queryset.filter(account_number=account_number)
 
         return queryset.order_by('-created_at')
+=======
+            return Response(
+                {"detail": "계정이 다시 활성화되었습니다."}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+>>>>>>> 8c562c67e1d95bec1382a4073f7b7a15cd223dd1
