@@ -12,6 +12,14 @@ class AccountSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         return Account.objects.create(user=user, **validated_data)
 
+class TransactionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionHistory
+        fields = ['id', 'account', 'amount', 'description', 'transaction_type', 'balance_after']
+        extra_kwargs = {
+            'account': {'read_only': True}
+        }
+
 class TransactionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = transaction_history
