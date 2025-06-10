@@ -150,9 +150,3 @@ class TransactionHistory(models.Model):
         return (
             f"{self.account.account_number} - {self.amount} ({self.transaction_type})"
         )
-
-class Transaction(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_type = models.CharField(max_length=10)
-    timestamp = models.DateTimeField(auto_now_add=True)

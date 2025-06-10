@@ -132,7 +132,3 @@ class ReactiveUserView(APIView):
         serializer = ReactiveUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {"detail": "계정이 다시 활성화되었습니다."}, status=status.HTTP_200_OK
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
