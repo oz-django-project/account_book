@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView
+from .models import Transaction
+from .serializers import TransactionSerializer
 
 from .serializers import RegisterSerializer, TokenPairSerializer, UserProfileSerializer, UserUpdateSerializer, \
     PasswordChangeSerializer, ReactiveUserSerializer
@@ -109,3 +111,29 @@ class ReactiveUserView(APIView):
             serializer.save()
             return Response({"detail": "계정이 다시 활성화되었습니다."},status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+   # 거래내역 조회
+class TransactionView(generics.ListAPIView):
+    serializer_class = TransactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Transaction.objects.filter(account__user=user)
+
+        t_type = queryset.values_list('transaction_type')
+        if t_type:
+            queryset = queryset.filter(transaction_type=t_type)
+
+        amount_min = self.request.query_params.get('amount_min')
+        amount_max = self.request.query_params.get('amount_max')
+        if amount_min:
+            queryset = queryset.filter(amount__gte=int(amount_min))
+        if amount_max:
+            queryset = queryset.filter(amount__lte=int(amount_max))
+
+        account_number = self.request.query_params.get('account_number')
+        if account_number:
+            queryset = queryset.filter(account_number=account_number)
+
+        return queryset.order_by('-created_at')

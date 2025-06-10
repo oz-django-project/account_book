@@ -34,4 +34,5 @@ urlpatterns = [
     path("api/profile/", MyProfileView.as_view(), name="my_profile"),
     path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
     path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
+    path('transactions/', TransactionListView.as_view(), name='transaction-list'),
 ]
