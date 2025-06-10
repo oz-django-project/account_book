@@ -1,15 +1,13 @@
-from django.contrib import admin
 from django.urls import path
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
+from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
+                                   SpectacularSwaggerView)
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from users.views import RegisterView
+from django.contrib import admin
+from users.views import RegisterView, LogoutView, CookieTokenObtainPairView, MyProfileView, PasswordChangeView, \
+    ReactiveUserView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -27,6 +25,13 @@ urlpatterns = [
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # admin
     path('admin/', admin.site.urls),
+    # user
     path('api/register/', RegisterView.as_view(), name='register'),
+    path("api/login/", CookieTokenObtainPairView.as_view(), name="login"),
+    path('api/logout/', LogoutView.as_view(), name='logout'),
+    path("api/profile/", MyProfileView.as_view(), name="my_profile"),
+    path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
+    path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
 ]

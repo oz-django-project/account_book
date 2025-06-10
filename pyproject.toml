@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "cryptography>=45.0.3",
     "djangorestframework>=0.0.1",
+    "djangorestframework-simplejwt>=5.5.0",
 ]
 
 [dependency-groups]
@@ -16,3 +17,10 @@ dev = [
     "drf-yasg>=1.21.10",
     "isort>=6.0.1",
 ]
+
+[tool.setuptools]
+packages = ["accounts", "users", "config"]
+
+[tool.isort]
+profile = "black"
+
