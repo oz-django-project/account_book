@@ -9,7 +9,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from accounts.views import AccountCreateView, AccountDeleteView, AccountListView
+from accounts.views import AccountCreateView, AccountDeleteView, AccountListView, TransactionDeleteView, \
+    TransactionUpdateView
 from users.views import (
     CookieTokenObtainPairView,
     LogoutView,
@@ -54,4 +55,7 @@ urlpatterns = [
     path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("api/accounts/", AccountListView.as_view(), name="account_list"),
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
+    # transaction
+    path("api/transactions/<int:pk>/delete/", TransactionDeleteView.as_view(), name="transaction_delete"),
+    path("api/transations/<int:pk>/update/", TransactionUpdateView.as_view(),name="transaction_update"),
 ]

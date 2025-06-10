@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.models import Account
+from accounts.models import Account, transaction_history
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -11,3 +11,13 @@ class AccountSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context["request"].user
         return Account.objects.create(user=user, **validated_data)
+
+class TransactionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = transaction_history
+        fields = (
+            'amount',
+            'description',
+            'transaction_type',
+            'transfer_method',
+        )
