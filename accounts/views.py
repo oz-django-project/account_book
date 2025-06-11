@@ -116,6 +116,14 @@ class TransactionHistoryListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         queryset = TransactionHistory.objects.filter(account__user=user)
 
+        account_id = self.request.query_params.get("account")
+        if account_id:
+            try:
+                account_id = int(account_id)
+                queryset = queryset.filter(account__id=account_id, account__user=user)
+            except ValueError:
+                return TransactionHistory.objects.none()
+
         t_type = self.request.query_params.get("transaction_type")
         if t_type:
             queryset = queryset.filter(transaction_type=t_type)

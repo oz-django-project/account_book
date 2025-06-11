@@ -51,33 +51,6 @@ urlpatterns = [
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     # admin
     path("admin/", admin.site.urls),
-    # user
-    path("api/register/", RegisterView.as_view(), name="register"),
-    path("api/login/", CookieTokenObtainPairView.as_view(), name="login"),
-    path("api/logout/", LogoutView.as_view(), name="logout"),
-    path("api/profile/", MyProfileView.as_view(), name="my_profile"),
-    path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
-    path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
-    # account
-    path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
-    path("api/accounts/", AccountListView.as_view(), name="account_list"),
-    path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
+    path("api/", include("users.urls")),
     path("api/", include("accounts.urls")),
-    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
-    # transaction
-    path(
-        "transactions/",
-        TransactionHistoryListCreateView.as_view(),
-        name="transaction-list",
-    ),
-    path(
-        "transactions/<int:pk>/",
-        TransactionHistoryRetrieveUpdateDestroyView.as_view(),
-        name="transaction-detail",
-    ),
-    path(
-        "api/accounts/<int:pk>/transaction/",
-        TransactionCreateView.as_view(),
-        name="transaction_create",
-    ),
 ]
