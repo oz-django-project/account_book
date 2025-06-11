@@ -115,3 +115,34 @@ def test_retrieve_account(self):
 
     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
     self.assertEqual(account.transactionhistory_set.count(), 0)
+
+
+# 거래내역 수정 테스트 코드 !
+def test_update_transaction(self):
+    account = Account.objects.create(
+        user=self.user,
+        bank_code="001",
+        account_number="111122223333",
+        account_type="CHECKING",
+        balance=10000,
+    )
+
+    transaction = TransactionHistory.objects.create(
+        account=account, amount=5000, transaction_type="DEPOSIT", description="수정 전"
+    )
+
+    update_data = {
+        "amount": 3000,
+        "transaction_type": "WITHDRAW",
+        "description": "수정 후",
+    }
+
+    url = reverse("transaction_detail", args=[account.pk, transaction.pk])
+    response = self.client.patch(url, update_data, format="json")
+
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    transaction.refresh_from_db()
+    self.assertEqual(transaction.amount, 3000)
+    self.assertEqual(transaction.transaction_type, "WITHDRAW")
+    self.assertEqual(transaction.description, "수정 후")
