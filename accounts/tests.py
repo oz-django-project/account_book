@@ -18,7 +18,7 @@ class AccountTestCase(APITestCase):
         self.assertEqual(1 + 1, 2)
         
 def test_create_account(self):
-    url = reverse('account_create')  # URL name이 맞는지 꼭 확인
+    url = reverse('account_create')  
     data = {
         "bank_code": "001",
         "account_number": "1234567890",
@@ -31,7 +31,7 @@ def test_create_account(self):
     self.assertEqual(Account.objects.first().account_number, "1234567890")
 
 def test_create_transaction(self):
-    url = f'/api/accounts/{self.account.pk}/transaction/'  # ← 정확한 경로 확인 필요
+    url = f'/api/accounts/{self.account.pk}/transaction/'
     data = {
         "amount": 5000,
         "transaction_type": "DEPOSIT",
