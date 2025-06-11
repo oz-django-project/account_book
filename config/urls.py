@@ -61,9 +61,9 @@ urlpatterns = [
     # account
     path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("api/accounts/", AccountListView.as_view(), name="account_list"),
+    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
     path("api/", include("accounts.urls")),
-    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
     # transaction
     path(
         "transactions/",

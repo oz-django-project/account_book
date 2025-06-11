@@ -12,9 +12,12 @@ User = get_user_model()
 
 
 class AccountTestCase(APITestCase):
+
     def setUp(self):
-        self.user = User.objects.create_user(password="1234", email="test@gmail.com")
+        self.user = User.objects.create_user(username="testuser", password="testpass")
         self.client.force_authenticate(user=self.user)
+        response = self.client.post("/api/accounts/", {"name": "Test Account"})
+        self.account = response.data
 
     def test_dummy(self):
         self.assertEqual(1 + 1, 2)
@@ -49,26 +52,12 @@ class AccountTestCase(APITestCase):
         self.assertEqual(self.account.transactionhistory_set.count(), 1)
         self.assertEqual(self.account.transactionhistory_set.first().amount, 5000)
 
-        # 계좌조회 테스트
 
-    def test_retrieve_account(self):
-        account = Account.objects.create(
-            user=self.user,
-            bank_code="001",
-            account_number="1234567890",
-            account_type="SAVINGS",
-            balance=1000,
-        )
+class AccountTestCase(APITestCase):
 
-        url = f"/api/accounts/{self.account.pk}/"
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        self.assertEqual(response.data["account_number"], "1234567890")
-        self.assertEqual(response.data["bank_code"], "001")
-        self.assertEqual(response.data["account_type"], "SAVINGS")
-        self.assertEqual(str(response.data["balance"]), "1000.00")
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@gmail.com", password="1234")
+        self.client.force_authenticate(user=self.user)
 
         # 계좌 삭제 테스트 !
 
@@ -86,6 +75,26 @@ class AccountTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Account.objects.count(), 0)
+
+        # 계좌조회 테스트
+
+    def test_retrieve_account(self):
+        account = Account.objects.create(
+            user=self.user,
+            bank_code="001",
+            account_number="1234567890",
+            account_type="SAVINGS",
+            balance=1000,
+        )
+        url = reverse("account_detail", args=[account.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["account_number"], "1234567890")
+        self.assertEqual(response.data["bank_code"], "001")
+        self.assertEqual(response.data["account_type"], "SAVINGS")
+        self.assertEqual(str(response.data["balance"]), "1000.00")
 
     # 거래내역 삭제 테스트
     def test_delete_transaction(self):

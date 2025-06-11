@@ -51,9 +51,10 @@ class AccountCreateView(CreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class AccountDetailView(RetrieveAPIView):
+class AccountDetailView(generics.RetrieveDestroyAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class TransactionDetailView(RetrieveUpdateDestroyAPIView):
