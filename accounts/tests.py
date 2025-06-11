@@ -19,6 +19,8 @@ class AccountTestCase(APITestCase):
     def test_dummy(self):
         self.assertEqual(1 + 1, 2)
 
+        # 계좌 생성 테스트 !
+
 
 def test_create_account(self):
     url = reverse("account_create")
@@ -32,6 +34,8 @@ def test_create_account(self):
     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     self.assertEqual(Account.objects.count(), 1)
     self.assertEqual(Account.objects.first().account_number, "1234567890")
+
+    # 거래 내역 생성 테스트 !
 
 
 def test_create_transaction(self):
@@ -50,20 +54,7 @@ class AccountTestCase(APITestCase):
         self.user = User.objects.create_user(email="test@gmail.com", password="1234")
         self.client.force_authenticate(user=self.user)
 
-    def test_create_account(self):
-        url = reverse("account_create")
-        data = {
-            "bank_code": "001",
-            "account_number": "1234567890",
-            "account_type": "SAVING",
-            "balance": 0,
-        }
-
-        response = self.client.post(url, data, format="json")
-        print(response.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Account.objects.count(), 1)
-        self.assertEqual(Account.objects.first().account_number, "1234567890")
+        # 계좌 삭제 테스트 !
 
     def test_delete_account(self):
         account = Account.objects.create(
