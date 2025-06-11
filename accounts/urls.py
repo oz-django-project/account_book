@@ -8,6 +8,8 @@ from accounts.views import (
     TransactionHistoryRetrieveUpdateDestroyView,
 )
 
+from .views import AccountCreateView, AccountDetailView
+
 urlpatterns = [
     path("accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("accounts/", AccountListView.as_view(), name="account_list"),
@@ -17,4 +19,6 @@ urlpatterns = [
     path("transactions/<int:pk>/", TransactionHistoryRetrieveUpdateDestroyView.as_view(), name="transaction_detail"),
     path("create/", AccountCreateView.as_view(), name="account_create"),
 
+    path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
+    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
 ]
