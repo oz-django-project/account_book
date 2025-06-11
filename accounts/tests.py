@@ -70,3 +70,48 @@ class AccountTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Account.objects.count(), 0)
+
+        # 계좌조회 테스트
+
+
+def test_retrieve_account(self):
+    account = Account.objects.create(
+        user=self.user,
+        bank_code="001",
+        account_number="1234567890",
+        account_type="SAVINGS",
+        balance=1000,
+    )
+
+    url = reverse("account_detail", args=[account.pk])
+    response = self.client.get(url)
+
+    self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    self.assertEqual(response.data["account_number"], "1234567890")
+    self.assertEqual(response.data["bank_code"], "001")
+    self.assertEqual(response.data["account_type"], "SAVINGS")
+    self.assertEqual(str(response.data["balance"]), "1000.00")
+
+    # 거래내역 삭제 테스트
+    def test_delete_transaction(self):
+        account = Account.objects.create(
+            user=self.user,
+            bank_code="001",
+            account_number="111122223333",
+            account_type="CHECKING",
+            balance=10000,
+        )
+
+    transaction = TransactionHistory.objects.create(
+        account=account,
+        amount=5000,
+        transaction_type="DEPOSIT",
+        description="삭제 테스트",
+    )
+
+    url = reverse("transaction_detail", args=[account.pk, transaction.pk])
+    response = self.client.delete(url)
+
+    self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    self.assertEqual(account.transactionhistory_set.count(), 0)
