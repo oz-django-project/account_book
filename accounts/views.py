@@ -1,5 +1,9 @@
 from rest_framework import generics, permissions, status
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveDestroyAPIView,
+    get_object_or_404,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +14,9 @@ from accounts.serializers import (
     TransactionCreateSerializer,
     TransactionHistorySerializer,
 )
+
+from .models import Account
+from .serializers import AccountSerializer
 
 
 class AccountCreateView(generics.CreateAPIView):
@@ -31,6 +38,21 @@ class AccountDeleteView(generics.DestroyAPIView):
 
     def get_queryset(self):
         return Account.objects.filter(user=self.request.user)
+
+
+class AccountCreateView(CreateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class AccountDetailView(RetrieveDestroyAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class TransactionCreateView(APIView):
@@ -79,6 +101,11 @@ class TransactionCreateView(APIView):
             },
             status=201,
         )
+
+
+class AccountCreateView(CreateAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
 
 
 class TransactionHistoryListCreateView(generics.ListCreateAPIView):

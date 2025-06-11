@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -12,6 +12,7 @@ from rest_framework import permissions
 from accounts.views import (
     AccountCreateView,
     AccountDeleteView,
+    AccountDetailView,
     AccountListView,
     TransactionCreateView,
     TransactionHistoryListCreateView,
@@ -61,6 +62,8 @@ urlpatterns = [
     path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("api/accounts/", AccountListView.as_view(), name="account_list"),
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
+    path("api/", include("accounts.urls")),
+    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
     # transaction
     path(
         "transactions/",
