@@ -9,20 +9,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from accounts.views import (
-    AccountCreateView, AccountDeleteView, AccountListView,
-    TransactionHistoryListCreateView, TransactionHistoryRetrieveUpdateDestroyView
-)
-from users.views import (
-    CookieTokenObtainPairView,
-    LogoutView,
-    MyProfileView,
-    PasswordChangeView,
-    ReactiveUserView,
-    RegisterView,
-)
-
-
 schema_view = get_schema_view(
     openapi.Info(
         title="API Documentation",
@@ -34,32 +20,12 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path(
-        "swagger/",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
+    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
-    ),
-    path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
-    # admin
+    path("swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("redoc-ui/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("admin/", admin.site.urls),
-    # user
-    path("api/register/", RegisterView.as_view(), name="register"),
-    path("api/login/", CookieTokenObtainPairView.as_view(), name="login"),
-    path("api/logout/", LogoutView.as_view(), name="logout"),
-    path("api/profile/", MyProfileView.as_view(), name="my_profile"),
-    path("api/password/change/", PasswordChangeView.as_view(), name="change_password"),
-    path("api/reactive/", ReactiveUserView.as_view(), name="reactive_user"),
-    # account
-    path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
-    path("api/accounts/", AccountListView.as_view(), name="account_list"),
-    path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
-    path('transactions/', TransactionHistoryListCreateView.as_view(), name='transaction-list'),
-    path('transactions/<int:pk>/', TransactionHistoryRetrieveUpdateDestroyView.as_view(), name='transaction-detail'),
     path("api/users/", include("users.urls")),
     path("api/accounts/", include("accounts.urls")),
 ]

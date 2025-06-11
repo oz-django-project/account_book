@@ -15,4 +15,5 @@ urlpatterns = [
     path("profile/", MyProfileView.as_view(), name="my_profile"),
     path("password/change/", PasswordChangeView.as_view(), name="change_password"),
     path("reactive/", ReactiveUserView.as_view(), name="reactive_user"),
+    path("register/", RegisterView.as_view(), name="register"),
 ]
