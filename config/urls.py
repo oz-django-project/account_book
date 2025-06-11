@@ -60,6 +60,6 @@ urlpatterns = [
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
     path('transactions/', TransactionHistoryListCreateView.as_view(), name='transaction-list'),
     path('transactions/<int:pk>/', TransactionHistoryRetrieveUpdateDestroyView.as_view(), name='transaction-detail'),
-    path("admin/", admin.site.urls),
-    path("api", include("api.urls")),
+    path("api/", include("users.urls")),
+    path("api/", include("accounts.urls")),
 ]
