@@ -46,6 +46,8 @@ class AccountCreateView(CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        account_id = self.request.data.get("account")
+        account = Account.objects.get(id=account_id)
         serializer.save(user=self.request.user)
 
 

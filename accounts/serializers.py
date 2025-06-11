@@ -35,7 +35,6 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
             "balance_after",
         ]
         extra_kwargs = {
-            "account": {"read_only": True},
             "balance_after": {"read_only": True},
         }
 
