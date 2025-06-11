@@ -4,13 +4,22 @@ from .models import Account, TransactionHistory
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Account
-        fields = ["id", "bank_code", "account_number", "account_type", "balance"]
+        fields = [
+            "id",
+            "user",
+            "bank_code",
+            "account_number",
+            "account_type",
+            "balance",
+        ]
 
     def create(self, validated_data):
-        user = self.context["request"].user
-        return Account.objects.create(user=user, **validated_data)
+        validated_data["user"] = self.context["request"].user
+        return Account.objects.create(**validated_data)
 
 
 class TransactionCreateSerializer(serializers.ModelSerializer):
