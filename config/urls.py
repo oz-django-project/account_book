@@ -10,8 +10,12 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 from accounts.views import (
-    AccountCreateView, AccountDeleteView, AccountListView,
-    TransactionHistoryListCreateView, TransactionHistoryRetrieveUpdateDestroyView
+    AccountCreateView,
+    AccountDeleteView,
+    AccountListView,
+    TransactionCreateView,
+    TransactionHistoryListCreateView,
+    TransactionHistoryRetrieveUpdateDestroyView,
 )
 from users.views import (
     CookieTokenObtainPairView,
@@ -21,7 +25,6 @@ from users.views import (
     ReactiveUserView,
     RegisterView,
 )
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -58,6 +61,20 @@ urlpatterns = [
     path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
     path("api/accounts/", AccountListView.as_view(), name="account_list"),
     path("api/accounts/<int:pk>/", AccountDeleteView.as_view(), name="account_delete"),
-    path('transactions/', TransactionHistoryListCreateView.as_view(), name='transaction-list'),
-    path('transactions/<int:pk>/', TransactionHistoryRetrieveUpdateDestroyView.as_view(), name='transaction-detail'),
+    # transaction
+    path(
+        "transactions/",
+        TransactionHistoryListCreateView.as_view(),
+        name="transaction-list",
+    ),
+    path(
+        "transactions/<int:pk>/",
+        TransactionHistoryRetrieveUpdateDestroyView.as_view(),
+        name="transaction-detail",
+    ),
+    path(
+        "api/accounts/<int:pk>/transaction/",
+        TransactionCreateView.as_view(),
+        name="transaction_create",
+    ),
 ]

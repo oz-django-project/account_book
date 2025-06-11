@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -121,7 +122,7 @@ class Account(models.Model):
         return self.account_number
 
 
-class transaction_history(models.Model):
+class TransactionHistory(models.Model):
 
     # 거래 타입
     TRANSACTION_TYPE = [
