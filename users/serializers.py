@@ -100,15 +100,9 @@ class PasswordChangeSerializer(serializers.Serializer):
 
 
 # 탈퇴 회원 복구
-
-
 class ReactiveUserSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-
-    # 이메일 단일 필드 검증: 형식 검증만 필요하면 생략 가능
-    def validate_email(self, value):
-        return value
 
     def validate(self, attrs):
         email = attrs.get("email")
@@ -129,10 +123,10 @@ class ReactiveUserSerializer(serializers.Serializer):
                 {"password": "비밀번호가 일치하지 않습니다."}
             )
 
-        self.user = user  # save에서 사용할 사용자 객체 저장
+        self.user = user
         return attrs
 
-    def save(self):
+    def save(self, **kwargs):
         self.user.is_active = True
         self.user.save()
         return self.user

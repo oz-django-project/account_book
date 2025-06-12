@@ -1,16 +1,11 @@
-from rest_framework import generics, permissions, status
-from rest_framework.generics import (
-    CreateAPIView,
-    RetrieveDestroyAPIView,
-    get_object_or_404,
-)
+from rest_framework import generics, permissions
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.models import Account, TransactionHistory
+from accounts.models import TransactionHistory
 from accounts.serializers import (
-    AccountSerializer,
     TransactionCreateSerializer,
     TransactionHistorySerializer,
 )
@@ -40,16 +35,7 @@ class AccountDeleteView(generics.DestroyAPIView):
         return Account.objects.filter(user=self.request.user)
 
 
-class AccountCreateView(CreateAPIView):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class AccountDetailView(RetrieveDestroyAPIView):
+class AccountDetailView(generics.RetrieveAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -103,18 +89,21 @@ class TransactionCreateView(APIView):
         )
 
 
-class AccountCreateView(CreateAPIView):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-
-
-class TransactionHistoryListCreateView(generics.ListCreateAPIView):
+class TransactionHistoryListView(generics.ListAPIView):
     serializer_class = TransactionHistorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         queryset = TransactionHistory.objects.filter(account__user=user)
+
+        account_id = self.request.query_params.get("account")
+        if account_id:
+            try:
+                account_id = int(account_id)
+                queryset = queryset.filter(account__id=account_id, account__user=user)
+            except ValueError:
+                return TransactionHistory.objects.none()
 
         t_type = self.request.query_params.get("transaction_type")
         if t_type:

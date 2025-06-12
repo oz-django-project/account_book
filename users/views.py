@@ -1,5 +1,5 @@
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -103,7 +103,7 @@ class MyProfileView(APIView):
     def delete(self, request):
         user = request.user
         user.is_active = False
-        user.save()
+        user.save(update_fields=["is_active"])
         return Response(
             {"detail": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT
         )
@@ -128,7 +128,13 @@ class PasswordChangeView(APIView):
 
 
 class ReactiveUserView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = ReactiveUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            return Response(
+                {"detail": "User reactivated successfully."}, status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

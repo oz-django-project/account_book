@@ -142,6 +142,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "users.authentication.CookieJWTAuthentication",
     ],
 }
 
@@ -149,4 +150,5 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "users.serializers.TokenObtainPairSerializer",
     "BLACKLIST_AFTER_ROTATION": True,
     "ROTATE_REFRESH_TOKENS": True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
 }
