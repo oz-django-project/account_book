@@ -1,7 +1,9 @@
 from rest_framework import generics, permissions, status
 from rest_framework.generics import (
     CreateAPIView,
+    RetrieveAPIView,
     RetrieveDestroyAPIView,
+    RetrieveUpdateDestroyAPIView,
     get_object_or_404,
 )
 from rest_framework.permissions import IsAuthenticated
@@ -49,10 +51,15 @@ class AccountCreateView(CreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class AccountDetailView(RetrieveDestroyAPIView):
+class AccountDetailView(generics.RetrieveDestroyAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class TransactionDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = TransactionHistory.objects.all()
+    serializer_class = TransactionHistorySerializer
 
 
 class TransactionCreateView(APIView):
@@ -101,11 +108,6 @@ class TransactionCreateView(APIView):
             },
             status=201,
         )
-
-
-class AccountCreateView(CreateAPIView):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
 
 
 class TransactionHistoryListCreateView(generics.ListCreateAPIView):

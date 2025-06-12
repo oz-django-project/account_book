@@ -1,5 +1,3 @@
-from http.client import responses
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -74,16 +72,6 @@ class AccountTestCase(APITestCase):
         self.assertEqual(Account.objects.count(), 0)
 
 
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase
-
-from accounts.models import Account, TransactionHistory  # 실제 경로에 맞게 조정
-
-User = get_user_model()
-
-
 class TransactionListTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -141,7 +129,7 @@ class TransactionListTest(APITestCase):
             transfer_method="ATM",
         )
 
-        self.url = reverse("transaction-list")
+        self.url = reverse("transaction_list")
 
     def authenticate(self):
         self.client.force_authenticate(user=self.user)
@@ -169,4 +157,66 @@ class TransactionListTest(APITestCase):
 
     def test_unauthenticated_user_cannot_access(self):
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)  # 수정됨
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # 거래내역 삭제 테스트
+    def test_delete_transaction(self):
+        self.authenticate()
+
+        account = Account.objects.create(
+            user=self.user,
+            bank_code="001",
+            account_number="111122223333",
+            account_type="CHECKING",
+            balance=10000,
+        )
+
+        transaction = TransactionHistory.objects.create(
+            account=account,
+            amount=5000,
+            transaction_type="DEPOSIT",
+            description="삭제 테스트",
+            balance_after="10000",
+        )
+
+        url = reverse("transaction_detail", args=[transaction.pk])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(account.transactions.count(), 0)
+
+    # 거래내역 수정 테스트 코드 !
+    def test_update_transaction(self):
+        self.authenticate()
+
+        account = Account.objects.create(
+            user=self.user,
+            bank_code="001",
+            account_number="111122223333",
+            account_type="CHECKING",
+            balance=10000,
+        )
+
+        transaction = TransactionHistory.objects.create(
+            account=account,
+            amount=5000,
+            transaction_type="DEPOSIT",
+            description="수정 전",
+            balance_after=10000,
+        )
+
+        update_data = {
+            "amount": 3000,
+            "transaction_type": "WITHDRAW",
+            "description": "수정 후",
+        }
+
+        url = reverse("transaction_detail", args=[transaction.pk])
+        response = self.client.patch(url, update_data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        transaction.refresh_from_db()
+        self.assertEqual(transaction.amount, 3000)
+        self.assertEqual(transaction.transaction_type, "WITHDRAW")
+        self.assertEqual(transaction.description, "수정 후")
