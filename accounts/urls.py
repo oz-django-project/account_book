@@ -6,7 +6,7 @@ from .views import (
     AccountDetailView,
     AccountListView,
     TransactionCreateView,
-    TransactionHistoryListCreateView,
+    TransactionHistoryListView,
     TransactionHistoryRetrieveUpdateDestroyView,
 )
 
@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path(
         "transactions/",
-        TransactionHistoryListCreateView.as_view(),
+        TransactionHistoryListView.as_view(),
         name="transaction_list",
     ),
     path(

@@ -1,9 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
-
-# Create your tests here.
 from rest_framework.test import APITestCase
 
 from accounts.models import Account, TransactionHistory
@@ -16,45 +13,19 @@ class AccountTestCase(APITestCase):
         self.user = User.objects.create_user(password="1234", email="test@gmail.com")
         self.client.force_authenticate(user=self.user)
 
-    def test_dummy(self):
-        self.assertEqual(1 + 1, 2)
+    def test_create_account(self):
+        url = reverse("account_create")
+        data = {
+            "bank_code": "001",
+            "account_number": "1234567890",
+            "account_type": "SAVING",
+            "balance": 10000,
+        }
+        response = self.client.post(url, data, format="json")
 
-        # 계좌 생성 테스트 !
-
-
-def test_create_account(self):
-    url = reverse("account_create")
-    data = {
-        "bank_code": "001",
-        "account_number": "1234567890",
-        "account_type": "SAVINGS",
-    }
-    response = self.client.post(url, data, format="json")
-
-    self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    self.assertEqual(Account.objects.count(), 1)
-    self.assertEqual(Account.objects.first().account_number, "1234567890")
-
-    # 거래 내역 생성 테스트 !
-
-
-def test_create_transaction(self):
-    url = f"/api/accounts/{self.account.pk}/transaction/"
-    data = {"amount": 5000, "transaction_type": "DEPOSIT", "description": "입금 테스트"}
-    response = self.client.post(url, data, format="json")
-
-    self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    self.assertEqual(self.account.transactionhistory_set.count(), 1)
-    self.assertEqual(self.account.transactionhistory_set.first().amount, 5000)
-
-
-class AccountTestCase(APITestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(email="test@gmail.com", password="1234")
-        self.client.force_authenticate(user=self.user)
-
-        # 계좌 삭제 테스트 !
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Account.objects.count(), 1)
+        self.assertEqual(Account.objects.first().account_number, "1234567890")
 
     def test_delete_account(self):
         account = Account.objects.create(
@@ -65,11 +36,39 @@ class AccountTestCase(APITestCase):
             balance=10000,
         )
 
-        url = reverse("account_detail", args=[account.pk])
+        url = reverse("account_delete", args=[account.pk])
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Account.objects.count(), 0)
+
+
+# 거래 내역 생성 테스트 !
+class TransactionCreateTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@gmail.com", password="1234")
+        self.client.force_authenticate(user=self.user)
+        self.account = Account.objects.create(
+            user=self.user,
+            bank_code="001",
+            account_number="123456",
+            account_type="CHECKING",
+            balance=200000,
+        )
+
+    def test_create_transaction(self):
+        url = f"/api/accounts/{self.account.pk}/transaction/"
+        data = {
+            "amount": 5000,
+            "transaction_type": "DEPOSIT",
+            "description": "입금 테스트",
+            "transfer_method": "ATM",
+        }
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(self.account.transactions.count(), 1)
+        self.assertEqual(self.account.transactions.first().amount, 5000)
 
 
 class TransactionListTest(APITestCase):

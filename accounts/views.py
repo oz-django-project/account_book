@@ -1,18 +1,11 @@
-from rest_framework import generics, permissions, status
-from rest_framework.generics import (
-    CreateAPIView,
-    RetrieveAPIView,
-    RetrieveDestroyAPIView,
-    RetrieveUpdateDestroyAPIView,
-    get_object_or_404,
-)
+from rest_framework import generics, permissions
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.models import Account, TransactionHistory
+from accounts.models import TransactionHistory
 from accounts.serializers import (
-    AccountSerializer,
     TransactionCreateSerializer,
     TransactionHistorySerializer,
 )
@@ -42,24 +35,10 @@ class AccountDeleteView(generics.DestroyAPIView):
         return Account.objects.filter(user=self.request.user)
 
 
-class AccountCreateView(CreateAPIView):
+class AccountDetailView(generics.RetrieveAPIView):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class AccountDetailView(generics.RetrieveDestroyAPIView):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class TransactionDetailView(RetrieveUpdateDestroyAPIView):
-    queryset = TransactionHistory.objects.all()
-    serializer_class = TransactionHistorySerializer
 
 
 class TransactionCreateView(APIView):
@@ -110,7 +89,7 @@ class TransactionCreateView(APIView):
         )
 
 
-class TransactionHistoryListCreateView(generics.ListCreateAPIView):
+class TransactionHistoryListView(generics.ListAPIView):
     serializer_class = TransactionHistorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
