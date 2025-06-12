@@ -61,7 +61,7 @@ class TransactionCreateTest(APITestCase):
         data = {
             "amount": 5000,
             "transaction_type": "DEPOSIT",
-            "description": "입금 테스트",
+            "description": "입금  테 스 트",
             "transfer_method": "ATM",
         }
         response = self.client.post(url, data, format="json")
