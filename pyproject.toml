@@ -5,8 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "black>=25.1.0",
     "cryptography>=45.0.3",
     "djangorestframework>=0.0.1",
+    "djangorestframework-simplejwt>=5.5.0",
+    "isort>=6.0.1",
 ]
 
 [dependency-groups]
@@ -16,3 +19,10 @@ dev = [
     "drf-yasg>=1.21.10",
     "isort>=6.0.1",
 ]
+
+[tool.setuptools]
+packages = ["accounts", "users", "config"]
+
+[tool.isort]
+profile = "black"
+
