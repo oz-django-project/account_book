@@ -3,8 +3,16 @@ import os
 from config.settings import *
 
 DEBUG = False
-ALLOWED_HOSTS = []  # 도메인 주소
+ALLOWED_HOSTS = ["*"]  # 도메인 주소
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-DATABASES = {}  # 배포 데이터베이스 설정
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("DB_PORT", "3306"),
+    }
+}
