@@ -1,9 +1,35 @@
-# accounts/urls.py
 from django.urls import path
 
-from .views import AccountCreateView, AccountDetailView
+from .views import (
+    AccountCreateView,
+    AccountDeleteView,
+    AccountDetailView,
+    AccountListView,
+    TransactionCreateView,
+    TransactionHistoryListView,
+    TransactionHistoryRetrieveUpdateDestroyView,
+)
 
 urlpatterns = [
-    path("api/accounts/create/", AccountCreateView.as_view(), name="account_create"),
-    path("api/accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
+    path("accounts/create/", AccountCreateView.as_view(), name="account_create"),
+    path("accounts/", AccountListView.as_view(), name="account_list"),
+    path("accounts/<int:pk>/", AccountDetailView.as_view(), name="account_detail"),
+    path(
+        "accounts/<int:pk>/delete/", AccountDeleteView.as_view(), name="account_delete"
+    ),
+    path(
+        "transactions/",
+        TransactionHistoryListView.as_view(),
+        name="transaction_list",
+    ),
+    path(
+        "transactions/<int:pk>/",
+        TransactionHistoryRetrieveUpdateDestroyView.as_view(),
+        name="transaction_detail",
+    ),
+    path(
+        "accounts/<int:pk>/transaction/",
+        TransactionCreateView.as_view(),
+        name="transaction_create",
+    ),
 ]
