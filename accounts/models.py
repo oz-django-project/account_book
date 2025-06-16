@@ -132,12 +132,12 @@ class TransactionHistory(models.Model):
     ]
 
     CATEGORY_CHOICES = [
-        ('food', '식비'),
-        ('transport', '교통'),
-        ('entertainment', '여가'),
-        ('shopping', '쇼핑'),
-        ('saving', '저축'),
-        ('etc', '기타'),
+        ("food", "식비"),
+        ("transport", "교통"),
+        ("entertainment", "여가"),
+        ("shopping", "쇼핑"),
+        ("saving", "저축"),
+        ("etc", "기타"),
     ]
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE, related_name="transactions"
@@ -145,7 +145,7 @@ class TransactionHistory(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     balance_after = models.DecimalField(max_digits=12, decimal_places=2)
     description = models.CharField(max_length=255)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='etc')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="etc")
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

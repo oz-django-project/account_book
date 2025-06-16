@@ -1,14 +1,20 @@
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from analysis.models import Analysis
-from .models import Notification
 from datetime import date
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+from analysis.models import Analysis
+
+from .models import Notification
 
 User = get_user_model()
 
+
 class NotificationSignalTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(email="test@example.com", password="testpass")
+        self.user = User.objects.create_user(
+            email="test@example.com", password="testpass"
+        )
 
     def test_notification_created_on_analysis(self):
         # Analysis 생성
@@ -18,7 +24,7 @@ class NotificationSignalTest(TestCase):
             type="weekly",
             period_start=date(2025, 6, 1),
             period_end=date(2025, 6, 30),
-            description="자동 분석 테스트"
+            description="자동 분석 테스트",
         )
 
         # 알림이 생성되었는지 확인
