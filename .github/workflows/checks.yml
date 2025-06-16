@@ -1,0 +1,82 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+          db:
+            image: mysql:8.0
+            ports:
+              - 3306:3306
+            env:
+              MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+              MYSQL_DATABASE: django_mini
+            options: >-
+              --health-cmd="mysqladmin ping -h localhost -u root --silent"
+              --health-interval=10s
+              --health-timeout=5s
+              --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13.3'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: create uv
+        run: |
+          uv venv
+
+      - name: Install Packages & Libraries
+        run: |
+          source .venv/bin/activate
+          uv pip install mysqlclient
+          uv pip install -r requirements.txt
+
+      - name: Run isort (Import sorting)
+        run: |
+          uv run isort . --check --diff
+
+      - name: Run black (Code formatting)
+        run: |
+          uv run black . --check
+
+      - name: Wait for MySQL to be ready
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -u root -p"$DB_PASSWORD" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 1
+          done
+
+      - name: Run Django Migration
+        env:
+          DB_NAME: django_mini
+          DB_USER: root
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DJANGO_SETTINGS_MODULE: config.settings
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: |
+          uv run python manage.py makemigrations
+          uv run python manage.py migrate
+
+#      - name: Test python project
+#        run: |
+#          uv run python manage.py test
