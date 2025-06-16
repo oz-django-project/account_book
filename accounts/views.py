@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -41,51 +41,33 @@ class AccountDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class TransactionCreateView(APIView):
+class TransactionCreateView(CreateAPIView):
+    serializer_class = TransactionCreateSerializer
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
-        account = get_object_or_404(Account, pk=pk, user=request.user)
+    def get_account(self):
+        return get_object_or_404(Account, pk=self.kwargs["pk"], user=self.request.user)
 
-        serializer = TransactionCreateSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
+    def perform_create(self, serializer):
+        account = self.get_account()
+        amount = serializer.validated_data["amount"]
+        transaction_type = serializer.validated_data["transaction_type"]
+        category = serializer.validated_data["category"]
 
-        data = serializer.validated_data
-        amount = data["amount"]
-        transaction_type = data["transaction_type"]
-        transfer_method = data["transfer_method"]
-        description = data.get("description", "")
-
+        # 잔액 계산
         if transaction_type == "DEPOSIT":
             account.balance += amount
         elif transaction_type == "WITHDRAW":
             if account.balance < amount:
-                return Response(
-                    {"error": "잔액이 부족합니다. 출금 금액을 확인해 주세요."},
-                    status=400,
-                )
+                raise serializer.ValidationError("잔액이 부족합니다.")
             account.balance -= amount
-        else:
-            return Response({"error": "유효하지 않은 거래 유형입니다."}, status=400)
 
         account.save()
 
-        TransactionHistory.objects.create(
+        serializer.save(
             account=account,
-            amount=amount,
             balance_after=account.balance,
-            description=description,
-            transaction_type=transaction_type,
-            transfer_method=transfer_method,
-        )
-
-        return Response(
-            {
-                "message": f"{dict(TransactionHistory.TRANSACTION_TYPE).get(transaction_type)}이 정상적으로 처리되었습니다.",
-                "balance": account.balance,
-            },
-            status=201,
+            category=category,
         )
 
 

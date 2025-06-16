@@ -30,8 +30,8 @@ class TransactionCreateSerializer(serializers.ModelSerializer):
             "account",
             "amount",
             "description",
+            "category",
             "transaction_type",
-            "transfer_method",
             "balance_after",
         ]
         extra_kwargs = {
