@@ -117,6 +117,7 @@ class Account(models.Model):
     bank_code = models.CharField(max_length=20, choices=BANK_CODES)
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPE)
     balance = models.DecimalField(max_digits=12, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.account_number
@@ -130,13 +131,13 @@ class TransactionHistory(models.Model):
         ("WITHDRAW", "출금"),
     ]
 
-    # 거래 종류
-    TRANSACTION_METHOD = [
-        ("ATM", "ATM 거래"),
-        ("TRANSFER", "계좌이체"),
-        ("AUTOMATIC_TRANSFER", "자동이체"),
-        ("CARD", "카드결제"),
-        ("INTEREST", "이자"),
+    CATEGORY_CHOICES = [
+        ('food', '식비'),
+        ('transport', '교통'),
+        ('entertainment', '여가'),
+        ('shopping', '쇼핑'),
+        ('saving', '저축'),
+        ('etc', '기타'),
     ]
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE, related_name="transactions"
@@ -144,9 +145,10 @@ class TransactionHistory(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     balance_after = models.DecimalField(max_digits=12, decimal_places=2)
     description = models.CharField(max_length=255)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='etc')
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE)
-    transfer_method = models.CharField(max_length=20, choices=TRANSACTION_METHOD)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return (

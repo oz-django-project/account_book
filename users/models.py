@@ -27,7 +27,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=20)
-    last_login = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
